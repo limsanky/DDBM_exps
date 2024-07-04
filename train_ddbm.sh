@@ -1,14 +1,16 @@
-DATASET_NAME=$1
-PRED=$2
-CKPT=$3
-
+DATASET_NAME="cifar10"
+PRED=$1
+CKPT=$2
 
 source ./args.sh $DATASET_NAME $PRED
 
-FREQ_SAVE_ITER=20000
-NGPU=1
+FREQ_SAVE_ITER=5000
+NUM_PROC=4
+CUDA_IDX=0
 
-mpiexec -n $NGPU python scripts/ddbm_train.py --exp=$EXP \
+export NCCL_P2P_DISABLE=1
+
+mpiexec -n ${NUM_PROC} python scripts/ddbm_train.py --exp=$EXP \
  --attention_resolutions $ATTN --class_cond False --use_scale_shift_norm True \
   --dropout 0.1 --ema_rate 0.9999 --batch_size $BS \
    --image_size $IMG_SIZE --lr 0.0001 --num_channels $NUM_CH --num_head_channels 64 \
@@ -19,4 +21,5 @@ mpiexec -n $NGPU python scripts/ddbm_train.py --exp=$EXP \
       --data_dir=$DATA_DIR --dataset=$DATASET ${CH_MULT:+ --channel_mult="${CH_MULT}"} \
       --num_workers=8  --sigma_data $SIGMA_DATA --sigma_max=$SIGMA_MAX --sigma_min=$SIGMA_MIN --cov_xy $COV_XY \
       --save_interval_for_preemption=$FREQ_SAVE_ITER --save_interval=$SAVE_ITER --debug=False \
-      ${CKPT:+ --resume_checkpoint="${CKPT}"} 
+      ${CKPT:+ --resume_checkpoint="${CKPT}"} \
+      --device_id=${CUDA_IDX}

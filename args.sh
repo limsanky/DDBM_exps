@@ -9,7 +9,8 @@ NGPU=1
 SIGMA_MAX=80.0
 SIGMA_MIN=0.002
 SIGMA_DATA=0.5
-COV_XY=0
+# COV_XY=0
+COV_XY=0.25
 
 
 NUM_CH=256
@@ -35,6 +36,14 @@ elif [[ $DATASET_NAME == "diode" ]]; then
 
     EXP="diode${IMG_SIZE}_${NUM_CH}d"
     SAVE_ITER=20000
+elif [[ $DATASET_NAME == "cifar10" ]]; then
+    DATA_DIR=/root/data/cifar10
+    DATASET=cifar10
+    IMG_SIZE=64
+    NUM_CH=192
+    NUM_RES_BLOCKS=3
+    EXP="e2h${IMG_SIZE}_${NUM_CH}d"
+    SAVE_ITER=100000
 fi
     
 if  [[ $PRED == "ve" ]]; then
