@@ -18,13 +18,13 @@ GPUS_PER_NODE = MPI.COMM_WORLD.Get_size()
 SETUP_RETRY_COUNT = 3
 
 
-def setup_dist():
+def setup_dist(device_id):
     """
     Setup a distributed process group.
     """
     if dist.is_initialized():
         return
-    # os.environ["CUDA_VISIBLE_DEVICES"] = f"{MPI.COMM_WORLD.Get_rank() % GPUS_PER_NODE}"
+    os.environ["CUDA_VISIBLE_DEVICES"] = f"{(MPI.COMM_WORLD.Get_rank() + device_id) % GPUS_PER_NODE}"
     
     th.cuda.set_device(MPI.COMM_WORLD.Get_rank())
     # print(GPUS_PER_NODE)
