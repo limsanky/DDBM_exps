@@ -225,6 +225,27 @@ def create_model(
             decoder_type='standard',
             resample_filter=[1,3,3,1],
         )
+    elif unet_type == 'bridge':
+        return SongUNet(
+            img_resolution=image_size,
+            in_channels=in_channels,
+            model_channels=num_channels,
+            out_channels=(in_channels if not learn_sigma else in_channels*2),
+            num_blocks=4,
+            attn_resolutions=[16],
+            dropout=dropout,
+            channel_mult=channel_mult,
+            channel_mult_noise=2,
+            # embedding_type='fourier',
+            # encoder_type='residual', 
+            # decoder_type='standard',
+            # resample_filter=[1,3,3,1],
+            resample_filter = [1,1],
+            channel_mult_noise = 1,
+            encoder_type = 'standard',
+            embedding_type = 'positional',
+            condition_mode='concat',
+        )
     else:
         raise ValueError(f"Unsupported unet type: {unet_type}")
 
