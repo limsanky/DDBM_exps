@@ -271,6 +271,8 @@ class SongUNet(torch.nn.Module):
 
         # Encoder.
         self.enc = torch.nn.ModuleDict()
+        # For passing in xT, we need to double the number of in_channels:
+        in_channels = in_channels * 2 if condition_mode == 'concat' else in_channels
         cout = in_channels
         caux = in_channels
         for level, mult in enumerate(channel_mult):
