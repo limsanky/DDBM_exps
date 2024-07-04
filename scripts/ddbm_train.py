@@ -5,7 +5,8 @@ Train a diffusion model on images.
 import argparse
 
 from ddbm import dist_util, logger
-from datasets import load_data
+# from datasets import load_data
+from ddbm.cifar_dataset import load_data
 from ddbm.resample import create_named_schedule_sampler
 from ddbm.script_util import (
     model_and_diffusion_defaults,
@@ -28,11 +29,11 @@ from glob import glob
 import os
 from datasets.augment import AugmentPipe
 def main(args):
-
+    
     workdir = get_workdir(args.exp)
     Path(workdir).mkdir(parents=True, exist_ok=True)
     
-    dist_util.setup_dist()
+    dist_util.setup_dist(args.device_id)
     logger.configure(dir=workdir)
     if dist.get_rank() == 0:
         name = args.exp if args.resume_checkpoint == "" else args.exp + '_resume'
